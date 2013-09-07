@@ -21,7 +21,7 @@ public:
 	
 	ofxFaceTracker srcTracker;
 	ofImage src;
-	ofImage flip;
+	ofImage mirrorCam;
 	vector<ofVec2f> srcPoints;
 	
 	bool cloneReady;

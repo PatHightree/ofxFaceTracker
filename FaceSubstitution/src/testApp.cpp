@@ -34,7 +34,9 @@ void testApp::setup() {
 void testApp::update() {
 	cam.update();
 	if(cam.isFrameNew()) {
-		camTracker.update(toCv(cam));
+		mirrorCam.setFromPixels(cam.getPixelsRef());
+		mirrorCam.mirror(false, true);
+		camTracker.update(toCv(mirrorCam));
 		
 		cloneReady = camTracker.getFound();
 		if(cloneReady) {
@@ -55,7 +57,7 @@ void testApp::update() {
 			srcFbo.end();
 			
 			clone.setStrength(16);
-			clone.update(srcFbo.getTextureReference(), cam.getTextureReference(), maskFbo.getTextureReference());
+			clone.update(srcFbo.getTextureReference(), mirrorCam.getTextureReference(), maskFbo.getTextureReference());
 		}
 	}
 }
@@ -66,7 +68,7 @@ void testApp::draw() {
 	if(src.getWidth() > 0 && cloneReady) {
 		clone.draw(0, 0);
 	} else {
-		cam.draw(0, 0);
+		mirrorCam.draw(0, 0);
 	}
 	
 	if(!camTracker.getFound()) {
