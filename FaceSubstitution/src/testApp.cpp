@@ -8,9 +8,25 @@ void testApp::setup() {
 #else
 	ofSetDataPathRoot("data/");
 #endif
+	camWidth = 640;
+	camHeight = 480;
+	displayWidth = 1080;
+	displayHeight = 1920;
+	outputWidth = 1080*16/9*4/3;	// Display a 9:16 cut out of a 4:3 camera image
+	outputHeight = 1920;
+	outputShiftX = -(outputWidth/2)+(displayWidth/2);
+	outputShiftY = 0;
+	outputRotation = 0;
+
 	ofSetVerticalSync(true);
+	ofSetWindowShape(displayWidth, displayHeight);
+	ofSetWindowPosition(0, 0);
+	// Can't use fullscreen mode because the window will not display anything until it no longer has focus ?!?!?
+	//ofSetFullscreen(true);
+	//ofSetOrientation(OF_ORIENTATION_90_RIGHT);
+
 	cloneReady = false;
-	cam.initGrabber(640, 480);
+	cam.initGrabber(camWidth, camHeight);
 	clone.setup(cam.getWidth(), cam.getHeight());
 	ofFbo::Settings settings;
 	settings.width = cam.getWidth();
@@ -21,6 +37,8 @@ void testApp::setup() {
 	srcTracker.setup();
 	srcTracker.setIterations(25);
 	srcTracker.setAttempts(4);
+
+	texScreen.allocate(camWidth, camHeight, GL_RGB);
 
 	faces.allowExt("jpg");
 	faces.allowExt("png");
@@ -34,6 +52,7 @@ void testApp::setup() {
 void testApp::update() {
 	cam.update();
 	if(cam.isFrameNew()) {
+		// Mirroring has to be done on the CPU side because the tracker lives on that side of the fence
 		mirrorCam.setFromPixels(cam.getPixelsRef());
 		mirrorCam.mirror(false, true);
 		camTracker.update(toCv(mirrorCam));
@@ -79,6 +98,15 @@ void testApp::draw() {
 	} else if(!srcTracker.getFound()) {
 		drawHighlightString("image face not found", 10, 30);
 	}
+
+	texScreen.loadScreenData(0,0,640,480);
+
+	//glPushMatrix();
+	//glTranslatef(outputHeight, 0, 0);
+	glRotatef(outputRotation, 0, 0, 1);
+	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
+	//texScreen.draw(-outputWidth/2+(1080/2), 0, outputWidth, outputHeight);
+	//glPopMatrix();
 }
 
 void testApp::loadFace(string face){
@@ -127,6 +155,9 @@ void testApp::keyPressed(int key){
 		break;
 	case OF_KEY_DOWN:
 		currentFace--;
+		break;
+	case OF_KEY_BACKSPACE:
+		ofToggleFullscreen();
 		break;
 	}
 	currentFace = ofClamp(currentFace,0,faces.size()-1);

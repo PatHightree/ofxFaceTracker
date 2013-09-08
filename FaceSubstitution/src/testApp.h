@@ -16,6 +16,11 @@ public:
 	void loadFace(string filename);
 	
 	void keyPressed(int key);
+	int camWidth, camHeight;
+	int displayWidth, displayHeight;
+	int outputWidth, outputHeight;
+	int outputShiftX, outputShiftY;
+	float outputRotation;
 
 	ofxFaceTrackerThreaded camTracker;
 	ofVideoGrabber cam;
@@ -24,6 +29,7 @@ public:
 	ofImage src;
 	ofImage mirrorCam;
 	vector<ofVec2f> srcPoints;
+	ofTexture texScreen;
 	
 	bool cloneReady;
 	Clone clone;
