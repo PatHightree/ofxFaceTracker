@@ -8,6 +8,12 @@
 	<height>480</height>
 </camera>
 <display>
-	<width>1080</width>
-	<height>1920</height>
+	<position>
+		<x>-1080</x>
+		<y>-870</y>
+	</position>
+  <size>
+    <x>1080</x>
+    <y>1920</y>
+  </size>
 </display>

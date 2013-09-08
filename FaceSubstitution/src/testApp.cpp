@@ -13,8 +13,8 @@ void testApp::setup() {
 
 	camWidth = settings.getValue("camera:width", 640);
 	camHeight = settings.getValue("camera:height", 480);
-	displayWidth = settings.getValue("display:width", 1080);
-	displayHeight = settings.getValue("display:height", 1920);
+	displayWidth = settings.getValue("display:size:x", 1080);
+	displayHeight = settings.getValue("display:size:y", 1920);
 	outputWidth = displayWidth * 16/9 * 4/3;	// Display a 9:16 cut out of a 4:3 camera image
 	outputHeight = displayHeight;
 	outputShiftX = -(outputWidth/2)+(displayWidth/2);
@@ -23,7 +23,9 @@ void testApp::setup() {
 
 	ofSetVerticalSync(true);
 	ofSetWindowShape(displayWidth, displayHeight);
-	ofSetWindowPosition(0, 0);
+	ofSetWindowPosition(
+		settings.getValue("display:position:x", 0), 
+		settings.getValue("display:position:y", 0));
 	// Can't use fullscreen mode because the window will not display anything until it no longer has focus ?!?!?
 	//ofSetFullscreen(true);
 	//ofSetOrientation(OF_ORIENTATION_90_RIGHT);
