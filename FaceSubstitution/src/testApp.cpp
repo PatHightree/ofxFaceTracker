@@ -87,6 +87,33 @@ void testApp::loadFace(string face){
 		srcTracker.update(toCv(src));
 		srcPoints = srcTracker.getImagePoints();
 	}
+
+	vector<string> tokens = ofSplitString(face, ".");
+	string extension = tokens[tokens.size() - 1];
+
+	tokens.pop_back();
+	tokens.push_back("tsv");
+	string points = ofJoinString(tokens, ".");
+	if (ofFile::doesFileExist(points))
+		loadPoints(points);
+}
+
+void testApp::loadPoints(string filename) {
+	ofFile file;
+	file.open(ofToDataPath(filename), ofFile::ReadWrite, false);
+	ofBuffer buff = file.readToBuffer();
+
+	// Discard the header line.
+	if (!buff.isLastLine()) buff.getNextLine();
+
+	srcPoints = vector<ofVec2f>();
+
+	while (!buff.isLastLine()) {
+		string line = buff.getNextLine();
+		vector<string> tokens = ofSplitString(line, "\t");
+		srcPoints.push_back(ofVec2f(ofToFloat(tokens[0]), ofToFloat(tokens[1])));
+	}
+	cout << "Read " << filename << "." << endl;
 }
 
 void testApp::dragEvent(ofDragInfo dragInfo) {

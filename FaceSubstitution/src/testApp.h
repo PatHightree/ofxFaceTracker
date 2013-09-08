@@ -12,7 +12,8 @@ public:
 	void update();
 	void draw();
 	void dragEvent(ofDragInfo dragInfo);
-	void loadFace(string face);
+	void loadPoints(string filename);
+	void loadFace(string filename);
 	
 	void keyPressed(int key);
 
