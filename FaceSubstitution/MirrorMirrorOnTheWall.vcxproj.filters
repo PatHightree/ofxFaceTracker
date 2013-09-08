@@ -70,6 +70,18 @@
     <ClCompile Include="src\testApp.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ofxXmlSettings\src\ofxXmlSettings.cpp">
+      <Filter>addons\ofxXmlSettings\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxXmlSettings\libs\tinyxml.cpp">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxXmlSettings\libs\tinyxmlerror.cpp">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ofxXmlSettings\libs\tinyxmlparser.cpp">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\all_indices.h">
@@ -390,6 +402,12 @@
     <ClInclude Include="src\testApp.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ofxXmlSettings\src\ofxXmlSettings.h">
+      <Filter>addons\ofxXmlSettings\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ofxXmlSettings\libs\tinyxml.h">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -397,6 +415,15 @@
     </Filter>
     <Filter Include="addons">
       <UniqueIdentifier>{42ccd762-36a2-44c7-9d77-96af000262ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxXmlSettings">
+      <UniqueIdentifier>{d80e7b31-b01f-467d-affe-ac9bb17845fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxXmlSettings\libs">
+      <UniqueIdentifier>{a8921d87-92db-49a2-aea6-44a0c182d217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxXmlSettings\src">
+      <UniqueIdentifier>{7fab64b3-14a4-4fee-aef6-6015afb3dec6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include "Clone.h"
 #include "ofxFaceTracker.h"
 #include "ofxFaceTrackerThreaded.h"
+#include "ofxXmlSettings.h"
 
 class testApp : public ofBaseApp {
 public:
@@ -14,8 +15,11 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void loadPoints(string filename);
 	void loadFace(string filename);
-	
 	void keyPressed(int key);
+	void TakeScreenShot(void);
+
+	ofxXmlSettings settings;
+
 	int camWidth, camHeight;
 	int displayWidth, displayHeight;
 	int outputWidth, outputHeight;

@@ -8,12 +8,15 @@ void testApp::setup() {
 #else
 	ofSetDataPathRoot("data/");
 #endif
-	camWidth = 640;
-	camHeight = 480;
-	displayWidth = 1080;
-	displayHeight = 1920;
-	outputWidth = 1080*16/9*4/3;	// Display a 9:16 cut out of a 4:3 camera image
-	outputHeight = 1920;
+	if(!settings.loadFile("Settings.xml"))
+		cout << "unable to load Settings.xml check data/ folder";
+
+	camWidth = settings.getValue("camera:width", 640);
+	camHeight = settings.getValue("camera:height", 480);
+	displayWidth = settings.getValue("display:width", 1080);
+	displayHeight = settings.getValue("display:height", 1920);
+	outputWidth = displayWidth * 16/9 * 4/3;	// Display a 9:16 cut out of a 4:3 camera image
+	outputHeight = displayHeight;
 	outputShiftX = -(outputWidth/2)+(displayWidth/2);
 	outputShiftY = 0;
 	outputRotation = 0;
@@ -28,11 +31,8 @@ void testApp::setup() {
 	cloneReady = false;
 	cam.initGrabber(camWidth, camHeight);
 	clone.setup(cam.getWidth(), cam.getHeight());
-	ofFbo::Settings settings;
-	settings.width = cam.getWidth();
-	settings.height = cam.getHeight();
-	maskFbo.allocate(settings);
-	srcFbo.allocate(settings);
+	maskFbo.allocate(camWidth, camHeight);
+	srcFbo.allocate(camWidth, camHeight);
 	camTracker.setup();
 	srcTracker.setup();
 	srcTracker.setIterations(25);
@@ -159,10 +159,20 @@ void testApp::keyPressed(int key){
 	case OF_KEY_BACKSPACE:
 		ofToggleFullscreen();
 		break;
+	case OF_KEY_RETURN:
+		TakeScreenShot();
+		break;
 	}
 	currentFace = ofClamp(currentFace,0,faces.size()-1);
 	if(faces.size()!=0){
 		loadFace(faces.getPath(currentFace));
 		drawHighlightString(faces.getName(currentFace), 10, 50);
 	}
+}
+
+void testApp::TakeScreenShot(){
+	ofImage screenImg;  
+	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
+	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
+	screenImg.saveImage("screenshot.png");
 }
