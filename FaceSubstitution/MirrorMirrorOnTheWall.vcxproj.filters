@@ -82,6 +82,9 @@
     <ClCompile Include="..\..\ofxXmlSettings\libs\tinyxmlparser.cpp">
       <Filter>addons\ofxXmlSettings\libs</Filter>
     </ClCompile>
+    <ClCompile Include="..\addons\ofxMSATimer\src\ofxMSATimer.cpp">
+      <Filter>addons\ofxMSATimer\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\all_indices.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="..\..\ofxXmlSettings\libs\tinyxml.h">
       <Filter>addons\ofxXmlSettings\libs</Filter>
     </ClInclude>
+    <ClInclude Include="..\addons\ofxMSATimer\src\ofxMSATimer.h">
+      <Filter>addons\ofxMSATimer\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -424,6 +430,12 @@
     </Filter>
     <Filter Include="addons\ofxXmlSettings\src">
       <UniqueIdentifier>{7fab64b3-14a4-4fee-aef6-6015afb3dec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSATimer">
+      <UniqueIdentifier>{caed621e-368c-4fa8-9ac4-e34018a0dc27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSATimer\src">
+      <UniqueIdentifier>{4d1fd79d-0e7c-478d-8c96-0555f6bc728f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

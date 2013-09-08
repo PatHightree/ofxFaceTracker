@@ -9,7 +9,7 @@ void testApp::setup() {
 	ofSetDataPathRoot("data/");
 #endif
 	if(!settings.loadFile("Settings.xml"))
-		cout << "unable to load Settings.xml check data/ folder";
+		cout << "unable to load Settings.xml check data/ folder" << endl;
 
 	camWidth = settings.getValue("camera:width", 640);
 	camHeight = settings.getValue("camera:height", 480);
@@ -41,6 +41,9 @@ void testApp::setup() {
 	srcTracker.setAttempts(4);
 
 	texScreen.allocate(camWidth, camHeight, GL_RGB);
+
+	screenshotTimer.setStartTime();
+	screenshotInterval = settings.getValue("screenshots:interval", 60);
 
 	faces.allowExt("jpg");
 	faces.allowExt("png");
@@ -80,6 +83,14 @@ void testApp::update() {
 			clone.setStrength(16);
 			clone.update(srcFbo.getTextureReference(), mirrorCam.getTextureReference(), maskFbo.getTextureReference());
 		}
+	}
+
+
+	if(screenshotTimer.getElapsedSeconds() > screenshotInterval){
+		screenshotTimer.setStartTime();
+
+		cout << "Taking screenshot" << endl;
+		//TakeScreenShot();
 	}
 }
 
@@ -176,5 +187,29 @@ void testApp::TakeScreenShot(){
 	ofImage screenImg;  
 	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
 	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
-	screenImg.saveImage("screenshot.png");
+
+	time_t rawtime;
+	struct tm * timeinfo;
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );
+	screenImg.saveImage(asctime (timeinfo));
+}
+
+char* testApp::asctime(const struct tm *timeptr)
+{
+	static const char wday_name[][4] = {
+		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+	};
+	static const char mon_name[][4] = {
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	};
+	static char result[26];
+	sprintf(result, "%.3s %.3s%3d %.2d:%.2d:%.2d %d\n",
+		wday_name[timeptr->tm_wday],
+		mon_name[timeptr->tm_mon],
+		timeptr->tm_mday, timeptr->tm_hour,
+		timeptr->tm_min, timeptr->tm_sec,
+		1900 + timeptr->tm_year);
+	return result;
 }

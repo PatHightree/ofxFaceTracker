@@ -6,6 +6,8 @@
 #include "ofxFaceTracker.h"
 #include "ofxFaceTrackerThreaded.h"
 #include "ofxXmlSettings.h"
+#include "ofxMSATimer.h"
+#include <time.h>       /* time_t, struct tm, time, localtime, asctime */
 
 class testApp : public ofBaseApp {
 public:
@@ -17,6 +19,7 @@ public:
 	void loadFace(string filename);
 	void keyPressed(int key);
 	void TakeScreenShot(void);
+	char* asctime(const struct tm *timeptr);
 
 	ofxXmlSettings settings;
 
@@ -34,6 +37,8 @@ public:
 	ofImage mirrorCam;
 	vector<ofVec2f> srcPoints;
 	ofTexture texScreen;
+	ofxMSATimer screenshotTimer;
+	float screenshotInterval;
 	
 	bool cloneReady;
 	Clone clone;
