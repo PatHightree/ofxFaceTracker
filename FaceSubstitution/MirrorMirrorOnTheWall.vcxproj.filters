@@ -85,6 +85,12 @@
     <ClCompile Include="..\addons\ofxMSATimer\src\ofxMSATimer.cpp">
       <Filter>addons\ofxMSATimer\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\addons\ofxFTP\libs\CFtpServer\CFtpServer.cpp">
+      <Filter>addons\ofxFTP\libs\CFtpServer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxFTP\src\ofxFTP.cpp">
+      <Filter>addons\ofxFTP\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\all_indices.h">
@@ -414,6 +420,15 @@
     <ClInclude Include="..\addons\ofxMSATimer\src\ofxMSATimer.h">
       <Filter>addons\ofxMSATimer\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\addons\ofxFTP\libs\CFtpServer\CFtpServer.h">
+      <Filter>addons\ofxFTP\libs\CFtpServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxFTP\libs\CFtpServer\CFtpServerGlobal.h">
+      <Filter>addons\ofxFTP\libs\CFtpServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxFTP\src\ofxFTP.h">
+      <Filter>addons\ofxFTP\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -436,6 +451,18 @@
     </Filter>
     <Filter Include="addons\ofxMSATimer\src">
       <UniqueIdentifier>{4d1fd79d-0e7c-478d-8c96-0555f6bc728f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxFTP">
+      <UniqueIdentifier>{1d52ee07-4fa2-4a75-8972-f5d7092370d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxFTP\src">
+      <UniqueIdentifier>{f301cd3f-d2cb-4a3c-947b-37dc949489b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxFTP\libs">
+      <UniqueIdentifier>{62578ba3-59ce-410f-8f86-c62769aeab7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxFTP\libs\CFtpServer">
+      <UniqueIdentifier>{36b14194-b5b9-43c8-b536-965d4e78c88d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

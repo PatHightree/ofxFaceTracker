@@ -42,8 +42,18 @@ void testApp::setup() {
 
 	texScreen.allocate(camWidth, camHeight, GL_RGB);
 
-	screenshotTimer.setStartTime();
-	screenshotInterval = settings.getValue("screenshots:interval", 60);
+	screenshotsTimer.setStartTime();
+	screenshotsInterval = settings.getValue("screenshots:interval", 60);
+	screenshotsEnabled = settings.getValue("screenshots:enabled", 1);
+	screenshotsLocation = settings.getValue("screenshots:location", "screenshots");
+	remoteLocation = settings.getValue("screenshots:ftp:remoteLocation", "");
+	if (settings.getValue("screenshots:ftp:enabled", 1)){
+		ftpClient.setup(
+			settings.getValue("screenshots:ftp:host", "192.168.1.3"),
+			settings.getValue("screenshots:ftp:user", "fulton"),
+			settings.getValue("screenshots:ftp:password", ""),
+			settings.getValue("screenshots:ftp:port", 21));
+	}
 
 	faces.allowExt("jpg");
 	faces.allowExt("png");
@@ -86,11 +96,11 @@ void testApp::update() {
 	}
 
 
-	if(screenshotTimer.getElapsedSeconds() > screenshotInterval){
-		screenshotTimer.setStartTime();
-
-		cout << "Taking screenshot" << endl;
-		//TakeScreenShot();
+	if(screenshotsTimer.getElapsedSeconds() > screenshotsInterval){
+		if (screenshotsEnabled) {
+			TakeScreenShot();
+		}
+		screenshotsTimer.setStartTime();
 	}
 }
 
@@ -184,15 +194,34 @@ void testApp::keyPressed(int key){
 }
 
 void testApp::TakeScreenShot(){
+	// Take screenshot
 	ofImage screenImg;  
 	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
 	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
 
+	// Get local time
 	time_t rawtime;
 	struct tm * timeinfo;
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
-	screenImg.saveImage(asctime (timeinfo));
+	
+	// Create filename
+	char filename[30];
+	strcpy(filename, asctime (timeinfo));
+	strcat(filename, ".png");
+
+	// Write file
+	string filepath = ofFilePath::join(screenshotsLocation, filename);
+	screenImg.saveImage( filepath);
+	cout << "Taking screenshot " << filepath << endl;
+
+	// Upload file
+	if (settings.getValue("screenshots:ftp:enabled", 1)) {
+		ftpClient.send(
+			filename, 
+			screenshotsLocation,
+			remoteLocation);
+	}
 }
 
 char* testApp::asctime(const struct tm *timeptr)
@@ -205,11 +234,12 @@ char* testApp::asctime(const struct tm *timeptr)
 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 	};
 	static char result[26];
-	sprintf(result, "%.3s %.3s%3d %.2d:%.2d:%.2d %d\n",
+	sprintf(result, "%.3s_%d-%.3s-%d_%.2d.%.2d.%.2d",
 		wday_name[timeptr->tm_wday],
+		timeptr->tm_mday, 
 		mon_name[timeptr->tm_mon],
-		timeptr->tm_mday, timeptr->tm_hour,
-		timeptr->tm_min, timeptr->tm_sec,
-		1900 + timeptr->tm_year);
+		1900 + timeptr->tm_year,
+		timeptr->tm_hour,
+		timeptr->tm_min, timeptr->tm_sec);
 	return result;
 }

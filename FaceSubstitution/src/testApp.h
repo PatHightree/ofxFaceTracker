@@ -8,6 +8,7 @@
 #include "ofxXmlSettings.h"
 #include "ofxMSATimer.h"
 #include <time.h>       /* time_t, struct tm, time, localtime, asctime */
+#include "ofxFTP.h"
 
 class testApp : public ofBaseApp {
 public:
@@ -37,8 +38,12 @@ public:
 	ofImage mirrorCam;
 	vector<ofVec2f> srcPoints;
 	ofTexture texScreen;
-	ofxMSATimer screenshotTimer;
-	float screenshotInterval;
+	ofxMSATimer screenshotsTimer;
+	float screenshotsInterval;
+	bool screenshotsEnabled;
+	string screenshotsLocation;
+	string remoteLocation;
+	ofxFTPClient ftpClient;
 	
 	bool cloneReady;
 	Clone clone;

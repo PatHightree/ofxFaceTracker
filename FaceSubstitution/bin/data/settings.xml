@@ -1,7 +1,15 @@
 ﻿<screenshots>
-	<interval>5</interval>
-	<directory>.</directory>
-	<relative>true</relative>
+	<enabled>1</enabled>
+	<interval>1</interval>
+	<location>screenshots</location>
+	<ftp>
+		<enabled>1</enabled>
+		<host>192.168.1.3</host>
+		<port>21</port>
+		<user>fotoupload</user>
+		<password>fotoupload</password>
+		<remoteLocation>/var/www/fultonia/feest-fotos</remoteLocation>
+	</ftp>
 </screenshots>
 <camera>
 	<width>640</width>

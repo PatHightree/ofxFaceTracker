@@ -1,3 +1,6 @@
 [submodule "addons/ofxMSATimer"]
 	path = addons/ofxMSATimer
 	url = https://github.com/obviousjim/ofxMSATimer.git
+[submodule "addons/ofxFTP"]
+	path = addons/ofxFTP
+url=https://github.com/fishkingsin/ofxFTP.git
