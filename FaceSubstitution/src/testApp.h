@@ -30,25 +30,29 @@ public:
 	int outputShiftX, outputShiftY;
 	float outputRotation;
 
-	ofxFaceTrackerThreaded camTracker;
+	bool capturePaused;
 	ofVideoGrabber cam;
-	
-	ofxFaceTracker srcTracker;
+	ofxMSATimer capturePauseTimer;
 	ofImage src;
 	ofImage mirrorCam;
+
+	ofxFaceTracker srcTracker;
+	ofxFaceTrackerThreaded camTracker;
 	vector<ofVec2f> srcPoints;
-	ofTexture texScreen;
-	ofxMSATimer screenshotsTimer;
-	float screenshotsInterval;
-	bool screenshotsEnabled;
-	string screenshotsLocation;
-	string remoteLocation;
-	ofxFTPClient ftpClient;
-	
 	bool cloneReady;
 	Clone clone;
 	ofFbo srcFbo, maskFbo;
-
 	ofDirectory faces;
 	int currentFace;
+
+	ofTexture texScreen;
+
+	ofxMSATimer screenshotsTimer;
+	float screenshotsInterval;
+	float showScreenshotDuration;
+	bool screenshotsEnabled;
+	string screenshotsLocation;
+
+	string remoteLocation;
+	ofxFTPClient ftpClient;
 };

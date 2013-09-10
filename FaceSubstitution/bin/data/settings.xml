@@ -1,6 +1,7 @@
 ﻿<screenshots>
 	<enabled>1</enabled>
-	<interval>1</interval>
+	<interval>7</interval>
+	<showDuration>5</showDuration>
 	<location>screenshots</location>
 	<ftp>
 		<enabled>0</enabled>

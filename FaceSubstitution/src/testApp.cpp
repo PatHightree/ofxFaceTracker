@@ -11,6 +11,7 @@ void testApp::setup() {
 	if(!settings.loadFile("Settings.xml"))
 		cout << "unable to load Settings.xml check data/ folder" << endl;
 
+	capturePaused = false;
 	camWidth = settings.getValue("camera:width", 640);
 	camHeight = settings.getValue("camera:height", 480);
 	displayWidth = settings.getValue("display:size:x", 1080);
@@ -46,6 +47,7 @@ void testApp::setup() {
 
 	screenshotsTimer.setStartTime();
 	screenshotsInterval = settings.getValue("screenshots:interval", 60);
+	showScreenshotDuration = settings.getValue("screenshots:showDuration", 5);
 	screenshotsEnabled = settings.getValue("screenshots:enabled", 1);
 	screenshotsLocation = settings.getValue("screenshots:location", "screenshots");
 	remoteLocation = settings.getValue("screenshots:ftp:remoteLocation", "");
@@ -67,7 +69,8 @@ void testApp::setup() {
 }
 
 void testApp::update() {
-	cam.update();
+	if (!capturePaused)
+		cam.update();
 	if(cam.isFrameNew()) {
 		// Mirroring has to be done on the CPU side because the tracker lives on that side of the fence
 		mirrorCam.setFromPixels(cam.getPixelsRef());
@@ -99,11 +102,17 @@ void testApp::update() {
 
 
 	if(screenshotsTimer.getElapsedSeconds() > screenshotsInterval){
+		capturePaused = true;
+		capturePauseTimer.setStartTime();
+
 		if (screenshotsEnabled) {
 			TakeScreenShot();
 		}
 		screenshotsTimer.setStartTime();
 	}
+
+	if(capturePauseTimer.getElapsedSeconds() > showScreenshotDuration)
+		capturePaused = false;
 }
 
 void testApp::draw() {
