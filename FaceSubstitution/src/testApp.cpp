@@ -37,8 +37,10 @@ void testApp::setup() {
 	srcFbo.allocate(camWidth, camHeight);
 	camTracker.setup();
 	srcTracker.setup();
-	srcTracker.setIterations(25);
-	srcTracker.setAttempts(4);
+	srcTracker.setIterations(settings.getValue("tracker:iterations", 25));
+	srcTracker.setClamp(settings.getValue("tracker:clamp", 3));
+	srcTracker.setTolerance(settings.getValue("tracker:tolerance", 0.1f));
+	srcTracker.setAttempts(settings.getValue("tracker:attempts", 4));
 
 	texScreen.allocate(camWidth, camHeight, GL_RGB);
 
@@ -194,8 +196,10 @@ void testApp::keyPressed(int key){
 }
 
 void testApp::TakeScreenShot(){
+	if (!screenshotsEnabled) return;
+
 	// Take screenshot
-	ofImage screenImg;  
+	ofImage screenImg;
 	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
 	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
 
@@ -212,8 +216,8 @@ void testApp::TakeScreenShot(){
 
 	// Write file
 	string filepath = ofFilePath::join(screenshotsLocation, filename);
-	screenImg.saveImage( filepath);
-	cout << "Taking screenshot " << filepath << endl;
+	screenImg.saveImage(filepath);
+	cout << "Saving " << filepath << endl;
 
 	// Upload file
 	if (settings.getValue("screenshots:ftp:enabled", 1)) {

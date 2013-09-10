@@ -3,7 +3,7 @@
 	<interval>1</interval>
 	<location>screenshots</location>
 	<ftp>
-		<enabled>1</enabled>
+		<enabled>0</enabled>
 		<host>192.168.1.3</host>
 		<port>21</port>
 		<user>fotoupload</user>
@@ -15,6 +15,12 @@
 	<width>640</width>
 	<height>480</height>
 </camera>
+<tracker>
+	<iterations>25</iterations> <!-- [1-25] 1 is fast and inaccurate, 25 is slow and accurate -->
+	<clamp>3</clamp> <!-- [0-4] 1 gives a very loose fit, 4 gives a very tight fit -->
+	<tolerance>0.1</tolerance> <!-- [.01-1] match tolerance -->
+	<attempts>4</attempts> <!-- [1-4] 1 is fast and may not find faces, 4 is slow but will find faces -->
+</tracker>
 <display>
 	<position>
 		<x>-1080</x>
