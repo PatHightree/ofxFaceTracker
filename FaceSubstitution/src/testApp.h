@@ -53,8 +53,12 @@ public:
 	float showScreenshotDuration;
 	bool screenshotsEnabled;
 	char screenshotFilename[30];
+	int screenshotWidth, screenshotHeight;
 	string screenshotsLocation;
-
+	string cameraCapturesLocation;
+	string thumbnailsLocation;
 	string remoteLocation;
+	string remoteCameraCapturesLocation;
+	string remoteThumbnailsLocation;
 	ofxFTPClient ftpClient;
 };

@@ -12,6 +12,7 @@ void testApp::setup() {
 		cout << "unable to load Settings.xml check data/ folder" << endl;
 	displayErrorMessages = settings.getValue("displayErrorMessages", 0);
 
+	// Camera capture settings
 	capturePaused = false;
 	camWidth = settings.getValue("camera:width", 640);
 	camHeight = settings.getValue("camera:height", 480);
@@ -23,15 +24,15 @@ void testApp::setup() {
 	outputShiftY = 0;
 	outputRotation = 0;
 
+	// Display settings
 	ofSetVerticalSync(true);
 	ofSetWindowShape(displayWidth, displayHeight);
 	ofSetWindowPosition(
 		settings.getValue("display:position:x", 0), 
 		settings.getValue("display:position:y", 0));
-	// Can't use fullscreen mode because the window will not display anything until it no longer has focus ?!?!?
-	//ofSetFullscreen(true);
-	//ofSetOrientation(OF_ORIENTATION_90_RIGHT);
+	texScreen.allocate(camWidth, camHeight, GL_RGB);
 
+	// Tracker settings
 	cloneReady = false;
 	cam.initGrabber(camWidth, camHeight);
 	clone.setup(cam.getWidth(), cam.getHeight());
@@ -44,14 +45,21 @@ void testApp::setup() {
 	srcTracker.setTolerance(settings.getValue("tracker:tolerance", 0.1f));
 	srcTracker.setAttempts(settings.getValue("tracker:attempts", 4));
 
-	texScreen.allocate(camWidth, camHeight, GL_RGB);
-
+	// Screenshot settings
 	screenshotsTimer.setStartTime();
 	screenshotsInterval = settings.getValue("screenshots:interval", 60);
 	showScreenshotDuration = settings.getValue("screenshots:showDuration", 5);
 	screenshotsEnabled = settings.getValue("screenshots:enabled", 1);
-	screenshotsLocation = settings.getValue("screenshots:location", "screenshots");
+	screenshotWidth = settings.getValue("screenshots:screenshotWidth", 1080);
+	screenshotHeight = settings.getValue("screenshots:screenshotHeight", 1920);
+	screenshotsLocation = settings.getValue("screenshots:location", "");
+	cameraCapturesLocation = settings.getValue("screenshots:cameraCapturesLocation", "");
+	thumbnailsLocation = settings.getValue("screenshots:thumbnailsLocation", "");
+
+	// FTP settings
 	remoteLocation = settings.getValue("screenshots:ftp:remoteLocation", "");
+	remoteCameraCapturesLocation = settings.getValue("screenshots:ftp:remoteCameraCapturesLocation", "");
+	remoteThumbnailsLocation = settings.getValue("screenshots:ftp:remoteThumbnailsLocation", "");
 	if (settings.getValue("screenshots:ftp:enabled", 1)){
 		ftpClient.setup(
 			settings.getValue("screenshots:ftp:host", "192.168.1.3"),
@@ -60,6 +68,7 @@ void testApp::setup() {
 			settings.getValue("screenshots:ftp:port", 21));
 	}
 
+	// Faces settings
 	faces.allowExt("jpg");
 	faces.allowExt("png");
 	faces.listDir("faces");
@@ -223,28 +232,47 @@ void testApp::TakeScreenShot(){
 	ofImage screenImg;
 	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
 	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
+	if (screenshotWidth != displayWidth || screenshotHeight != displayHeight)
+		screenImg.resize(screenshotWidth, screenshotHeight);
 
-	// Get local time
+	// Create filename
 	time_t rawtime;
 	struct tm * timeinfo;
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
-	
-	// Create filename
 	strcpy(screenshotFilename, asctime (timeinfo));
 	strcat(screenshotFilename, ".png");
+	cout << "Saving " << screenshotFilename << endl;
 
-	// Write file
-	string filepath = ofFilePath::join(screenshotsLocation, screenshotFilename);
-	screenImg.saveImage(filepath);
-	cout << "Saving " << filepath << endl;
+	// Write screenshot
+	string screenshotPath = ofFilePath::join(screenshotsLocation, screenshotFilename);
+	screenImg.saveImage(screenshotPath);
 
-	// Upload file
-	if (settings.getValue("screenshots:ftp:enabled", 1)) {
+	// Write thumbnail
+	screenImg.resize(
+		settings.getValue("screenshots:thumbWidth", 90),
+		settings.getValue("screenshots:thumbHeight", 160));
+	string thumbPath = ofFilePath::join(thumbnailsLocation, screenshotFilename);
+	screenImg.saveImage(thumbPath);
+
+	// Write camera capture
+	string cameraPath = ofFilePath::join(cameraCapturesLocation, screenshotFilename);
+	mirrorCam.saveImage(cameraPath);
+
+	// Upload files
+	if (settings.getValue("screenshots:upload", 0)) {
 		ftpClient.send(
 			screenshotFilename, 
 			screenshotsLocation,
 			remoteLocation);
+		ftpClient.send(
+			screenshotFilename, 
+			cameraCapturesLocation,
+			remoteCameraCapturesLocation);
+		ftpClient.send(
+			screenshotFilename, 
+			thumbnailsLocation,
+			remoteThumbnailsLocation);
 	}
 }
 

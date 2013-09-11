@@ -1,15 +1,23 @@
 ﻿<screenshots>
 	<enabled>1</enabled>
-	<interval>7</interval>
-	<showDuration>5</showDuration>
+	<interval>2</interval>
+	<showDuration>0</showDuration>
 	<location>screenshots</location>
+	<screenshotWidth>1080</screenshotWidth>
+	<screenshotHeight>1920</screenshotHeight>
+	<cameraCapturesLocation>screenshots\camera</cameraCapturesLocation>
+	<thumbnailsLocation>screenshots\thumbs</thumbnailsLocation>
+	<thumbWidth>90</thumbWidth>
+	<thumbHeight>160</thumbHeight>
+	<upload>1</upload>
 	<ftp>
-		<enabled>0</enabled>
 		<host>192.168.1.3</host>
 		<port>21</port>
 		<user>fotoupload</user>
 		<password>fotoupload</password>
 		<remoteLocation>/var/www/fultonia/feest-fotos</remoteLocation>
+		<remoteCameraCapturesLocation>/var/www/fultonia/feest-fotos/camera</remoteCameraCapturesLocation>
+		<remoteThumbnailsLocation>/var/www/fultonia/feest-fotos/thumbs</remoteThumbnailsLocation>
 	</ftp>
 </screenshots>
 <camera>
