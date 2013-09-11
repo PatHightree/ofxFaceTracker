@@ -23,6 +23,7 @@ public:
 	char* asctime(const struct tm *timeptr);
 
 	ofxXmlSettings settings;
+	bool displayErrorMessages;
 
 	int camWidth, camHeight;
 	int displayWidth, displayHeight;
@@ -51,6 +52,7 @@ public:
 	float screenshotsInterval;
 	float showScreenshotDuration;
 	bool screenshotsEnabled;
+	char screenshotFilename[30];
 	string screenshotsLocation;
 
 	string remoteLocation;

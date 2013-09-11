@@ -10,6 +10,7 @@ void testApp::setup() {
 #endif
 	if(!settings.loadFile("Settings.xml"))
 		cout << "unable to load Settings.xml check data/ folder" << endl;
+	displayErrorMessages = settings.getValue("displayErrorMessages", 0);
 
 	capturePaused = false;
 	camWidth = settings.getValue("camera:width", 640);
@@ -69,8 +70,7 @@ void testApp::setup() {
 }
 
 void testApp::update() {
-	if (!capturePaused)
-		cam.update();
+	cam.update();
 	if(cam.isFrameNew()) {
 		// Mirroring has to be done on the CPU side because the tracker lives on that side of the fence
 		mirrorCam.setFromPixels(cam.getPixelsRef());
@@ -111,36 +111,48 @@ void testApp::update() {
 		screenshotsTimer.setStartTime();
 	}
 
-	if(capturePauseTimer.getElapsedSeconds() > showScreenshotDuration)
+	if(capturePauseTimer.getElapsedSeconds() > showScreenshotDuration) {
 		capturePaused = false;
+		strcpy(screenshotFilename, "");
+	}
 }
 
 void testApp::draw() {
-	ofSetColor(255);
+	if (!capturePaused){
+		ofSetColor(255);
 	
-	if(src.getWidth() > 0 && cloneReady) {
-		clone.draw(0, 0);
-	} else {
-		mirrorCam.draw(0, 0);
-	}
-	
-	if(!camTracker.getFound()) {
-		drawHighlightString("camera face not found", 10, 10);
-	}
-	if(src.getWidth() == 0) {
-		drawHighlightString("drag an image here", 10, 30);
-	} else if(!srcTracker.getFound()) {
-		drawHighlightString("image face not found", 10, 30);
+		if(src.getWidth() > 0 && cloneReady) {
+			clone.draw(0, 0);
+		} else {
+			mirrorCam.draw(0, 0);
+		}
+
+		texScreen.loadScreenData(0,0,640,480);
+
+		//glPushMatrix();
+		//glTranslatef(outputHeight, 0, 0);
+		glRotatef(outputRotation, 0, 0, 1);
+		texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
+		//texScreen.draw(-outputWidth/2+(1080/2), 0, outputWidth, outputHeight);
+		//glPopMatrix();
 	}
 
-	texScreen.loadScreenData(0,0,640,480);
-
-	//glPushMatrix();
-	//glTranslatef(outputHeight, 0, 0);
 	glRotatef(outputRotation, 0, 0, 1);
 	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
-	//texScreen.draw(-outputWidth/2+(1080/2), 0, outputWidth, outputHeight);
-	//glPopMatrix();
+
+	if (capturePaused)
+		drawHighlightString("Plaatje sharen? www.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename), 200, displayHeight - 50);
+
+	if (displayErrorMessages){
+		if(!camTracker.getFound()) {
+			drawHighlightString("camera face not found", 10, 10);
+		}
+		if(src.getWidth() == 0) {
+			drawHighlightString("drag an image here", 10, 30);
+		} else if(!srcTracker.getFound()) {
+			drawHighlightString("image face not found", 10, 30);
+		}
+	}
 }
 
 void testApp::loadFace(string face){
@@ -219,19 +231,18 @@ void testApp::TakeScreenShot(){
 	timeinfo = localtime ( &rawtime );
 	
 	// Create filename
-	char filename[30];
-	strcpy(filename, asctime (timeinfo));
-	strcat(filename, ".png");
+	strcpy(screenshotFilename, asctime (timeinfo));
+	strcat(screenshotFilename, ".png");
 
 	// Write file
-	string filepath = ofFilePath::join(screenshotsLocation, filename);
+	string filepath = ofFilePath::join(screenshotsLocation, screenshotFilename);
 	screenImg.saveImage(filepath);
 	cout << "Saving " << filepath << endl;
 
 	// Upload file
 	if (settings.getValue("screenshots:ftp:enabled", 1)) {
 		ftpClient.send(
-			filename, 
+			screenshotFilename, 
 			screenshotsLocation,
 			remoteLocation);
 	}
