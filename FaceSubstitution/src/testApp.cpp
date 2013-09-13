@@ -167,18 +167,16 @@ void testApp::draw() {
 void testApp::loadFace(string face){
 	src.loadImage(face);
 	if(src.getWidth() > 0) {
-		srcTracker.update(toCv(src));
-		srcPoints = srcTracker.getImagePoints();
+		string points = ofFilePath::removeExt(face) + ".tsv";
+		if (ofFile::doesFileExist(points)) {
+			loadPoints(points);
+		} 
+		else {
+			srcTracker.update(toCv(src));
+			srcPoints = srcTracker.getImagePoints();
+		}
 	}
 
-	vector<string> tokens = ofSplitString(face, ".");
-	string extension = tokens[tokens.size() - 1];
-
-	tokens.pop_back();
-	tokens.push_back("tsv");
-	string points = ofJoinString(tokens, ".");
-	if (ofFile::doesFileExist(points))
-		loadPoints(points);
 }
 
 void testApp::loadPoints(string filename) {
