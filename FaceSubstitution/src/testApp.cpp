@@ -33,7 +33,7 @@ void testApp::setup() {
 	texScreen.allocate(camWidth, camHeight, GL_RGB);
 
 	// Tracker settings
-	cloneReady = false;
+	faceFound = faceFoundLastFrame = false;
 	cam.initGrabber(camWidth, camHeight);
 	clone.setup(cam.getWidth(), cam.getHeight());
 	maskFbo.allocate(camWidth, camHeight);
@@ -44,6 +44,7 @@ void testApp::setup() {
 	srcTracker.setClamp(settings.getValue("tracker:clamp", 3));
 	srcTracker.setTolerance(settings.getValue("tracker:tolerance", 0.1f));
 	srcTracker.setAttempts(settings.getValue("tracker:attempts", 4));
+	switchTextureOnNewFace = settings.getValue("tracker:switchTextureOnNewFace", 0);
 
 	// Screenshot settings
 	screenshotsTimer.setStartTime();
@@ -88,8 +89,9 @@ void testApp::update() {
 		mirrorCam.mirror(false, true);
 		camTracker.update(toCv(mirrorCam));
 		
-		cloneReady = camTracker.getFound();
-		if(cloneReady) {
+		faceFoundLastFrame = faceFound;
+		faceFound = camTracker.getFound();
+		if(faceFound) {
 			ofMesh camMesh = camTracker.getImageMesh();
 			camMesh.clearTexCoords();
 			camMesh.addTexCoords(srcPoints);
@@ -109,7 +111,17 @@ void testApp::update() {
 			clone.setStrength(16);
 			clone.update(srcFbo.getTextureReference(), mirrorCam.getTextureReference(), maskFbo.getTextureReference());
 		}
+
+		// If a new face was detected, change to a new texture.
+		if (!faceFoundLastFrame && faceFound && switchTextureOnNewFace) {
+			currentFace++;
+			// Clamp currentFace and load 
+			currentFace = (currentFace + faces.size()-1) % (faces.size()-1);
+			if(faces.size()!=0)
+				loadFace(faces.getPath(currentFace));
+		}
 	}
+
 
 	switch (state) {
 	case RUNNING:
@@ -143,7 +155,7 @@ void testApp::draw() {
 	if (state == RUNNING){
 		ofSetColor(255);
 	
-		if(src.getWidth() > 0 && cloneReady) {
+		if(src.getWidth() > 0 && faceFound) {
 			clone.draw(0, 0);
 		} else {
 			mirrorCam.draw(0, 0);
@@ -231,6 +243,9 @@ void testApp::keyPressed(int key){
 		break;
 	case OF_KEY_RETURN:
 		SaveScreenShot();
+		break;
+	case OF_KEY_ESC:
+		ofExit();
 		break;
 	}
 	currentFace = (currentFace + faces.size()-1) % (faces.size()-1);

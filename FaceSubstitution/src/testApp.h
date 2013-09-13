@@ -41,7 +41,7 @@ public:
 	ofxFaceTracker srcTracker;
 	ofxFaceTrackerThreaded camTracker;
 	vector<ofVec2f> srcPoints;
-	bool cloneReady;
+	bool faceFound, faceFoundLastFrame, switchTextureOnNewFace;
 	Clone clone;
 	ofFbo srcFbo, maskFbo;
 	ofDirectory faces;

@@ -1,7 +1,7 @@
 ﻿<screenshots>
-	<enabled>1</enabled>
-	<interval>2</interval>
-	<showDuration>0</showDuration>
+	<enabled>0</enabled>
+	<interval>2</interval> <!-- all durations are specified in seconds -->
+	<showDuration>5</showDuration>
 	<location>screenshots</location>
 	<screenshotWidth>432</screenshotWidth>
 	<screenshotHeight>768</screenshotHeight>
@@ -9,7 +9,7 @@
 	<thumbnailsLocation>screenshots\thumbs</thumbnailsLocation>
 	<thumbWidth>90</thumbWidth>
 	<thumbHeight>160</thumbHeight>
-	<upload>1</upload>
+	<upload>0</upload>
 	<ftp>
 		<host>192.168.1.3</host>
 		<port>21</port>
@@ -29,6 +29,7 @@
 	<clamp>3</clamp> <!-- [0-4] 1 gives a very loose fit, 4 gives a very tight fit -->
 	<tolerance>0.1</tolerance> <!-- [.01-1] match tolerance -->
 	<attempts>4</attempts> <!-- [1-4] 1 is fast and may not find faces, 4 is slow but will find faces -->
+	<switchTextureOnNewFace>1</switchTextureOnNewFace>
 </tracker>
 <display>
 	<position>
