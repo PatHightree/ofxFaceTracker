@@ -216,11 +216,9 @@ void testApp::keyPressed(int key){
 		TakeScreenShot();
 		break;
 	}
-	currentFace = ofClamp(currentFace,0,faces.size()-1);
-	if(faces.size()!=0){
+	currentFace = (currentFace + faces.size()-1) % (faces.size()-1);
+	if(faces.size()!=0)
 		loadFace(faces.getPath(currentFace));
-		drawHighlightString(faces.getName(currentFace), 10, 50);
-	}
 }
 
 void testApp::TakeScreenShot(){
