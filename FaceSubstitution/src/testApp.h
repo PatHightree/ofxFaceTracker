@@ -62,4 +62,6 @@ public:
 	string remoteCameraCapturesLocation;
 	string remoteThumbnailsLocation;
 	ofxFTPClient ftpClient;
+
+	ofTrueTypeFont myfont;
 };

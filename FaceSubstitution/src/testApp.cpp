@@ -76,6 +76,8 @@ void testApp::setup() {
 	if(faces.size()!=0){
 		loadFace(faces.getPath(currentFace));
 	}
+
+	myfont.loadFont("HARNGTON.ttf", 32);
 }
 
 void testApp::update() {
@@ -160,8 +162,12 @@ void testApp::draw() {
 	glRotatef(outputRotation, 0, 0, 1);
 	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
 
-	if (showingScreenshot)
-		drawHighlightString("Plaatje sharen? www.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename), 200, displayHeight - 50);
+	if (state == SHOWING_INFO || state == SHOWING_SCREENSHOT) {
+		// Display sharing url
+		string msg = "Foto sharen?\nwww.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename);
+		ofSetColor(255);
+		myfont.drawString(msg, 25, displayHeight - 75);
+	}
 
 	if (displayErrorMessages){
 		if(!camTracker.getFound()) {
