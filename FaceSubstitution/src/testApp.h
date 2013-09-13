@@ -19,11 +19,13 @@ public:
 	void loadPoints(string filename);
 	void loadFace(string filename);
 	void keyPressed(int key);
-	void TakeScreenShot(void);
+	void SaveScreenShot(void);
 	char* asctime(const struct tm *timeptr);
 
 	ofxXmlSettings settings;
 	bool displayErrorMessages;
+	enum states { RUNNING, SHOWING_INFO, SAVING_SCREENSHOT, SHOWING_SCREENSHOT };
+	states state;
 
 	int camWidth, camHeight;
 	int displayWidth, displayHeight;
@@ -34,7 +36,7 @@ public:
 	ofVideoGrabber cam;
 	ofImage src;
 	ofImage mirrorCam;
-	bool showingScreenshot;
+	bool takeScreenshotNextFrame, tookScreenshot;
 
 	ofxFaceTracker srcTracker;
 	ofxFaceTrackerThreaded camTracker;
