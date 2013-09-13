@@ -3,8 +3,8 @@
 	<interval>2</interval>
 	<showDuration>0</showDuration>
 	<location>screenshots</location>
-	<screenshotWidth>1080</screenshotWidth>
-	<screenshotHeight>1920</screenshotHeight>
+	<screenshotWidth>432</screenshotWidth>
+	<screenshotHeight>768</screenshotHeight>
 	<cameraCapturesLocation>screenshots\camera</cameraCapturesLocation>
 	<thumbnailsLocation>screenshots\thumbs</thumbnailsLocation>
 	<thumbWidth>90</thumbWidth>
