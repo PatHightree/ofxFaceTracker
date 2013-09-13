@@ -31,11 +31,10 @@ public:
 	int outputShiftX, outputShiftY;
 	float outputRotation;
 
-	bool capturePaused;
 	ofVideoGrabber cam;
-	ofxMSATimer capturePauseTimer;
 	ofImage src;
 	ofImage mirrorCam;
+	bool showingScreenshot;
 
 	ofxFaceTracker srcTracker;
 	ofxFaceTrackerThreaded camTracker;

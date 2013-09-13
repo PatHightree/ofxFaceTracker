@@ -13,7 +13,7 @@ void testApp::setup() {
 	displayErrorMessages = settings.getValue("displayErrorMessages", 0);
 
 	// Camera capture settings
-	capturePaused = false;
+	showingScreenshot = false;
 	camWidth = settings.getValue("camera:width", 640);
 	camHeight = settings.getValue("camera:height", 480);
 	displayWidth = settings.getValue("display:size:x", 1080);
@@ -109,25 +109,23 @@ void testApp::update() {
 		}
 	}
 
-
-	if(screenshotsTimer.getElapsedSeconds() > screenshotsInterval){
-		capturePaused = true;
-		capturePauseTimer.setStartTime();
-
-		if (screenshotsEnabled) {
-			TakeScreenShot();
-		}
-		screenshotsTimer.setStartTime();
-	}
-
-	if(capturePauseTimer.getElapsedSeconds() > showScreenshotDuration) {
-		capturePaused = false;
+	if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval + showScreenshotDuration) {
+		// Stop showing and restart timer
+		showingScreenshot = false;
 		strcpy(screenshotFilename, "");
-	}
+		screenshotsTimer.setStartTime();
+	} else 
+		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval) {
+			// Capture screenshot and start showing
+			if (screenshotsEnabled && !showingScreenshot){
+				TakeScreenShot();
+				showingScreenshot = true;
+			}
+		}
 }
 
 void testApp::draw() {
-	if (!capturePaused){
+	if (!showingScreenshot){
 		ofSetColor(255);
 	
 		if(src.getWidth() > 0 && cloneReady) {
@@ -149,7 +147,7 @@ void testApp::draw() {
 	glRotatef(outputRotation, 0, 0, 1);
 	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
 
-	if (capturePaused)
+	if (showingScreenshot)
 		drawHighlightString("Plaatje sharen? www.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename), 200, displayHeight - 50);
 
 	if (displayErrorMessages){
