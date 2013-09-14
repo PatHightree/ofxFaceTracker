@@ -157,13 +157,15 @@ void testApp::update() {
 }
 
 void testApp::draw() {
-	if(src.getWidth() > 0 && faceFound) {
-		clone.draw(0, 0);
-	} else {
-		mirrorCam.draw(0, 0);
-	}
+	if (state==RUNNING){
+		if(src.getWidth() > 0 && faceFound) {
+			clone.draw(0, 0);
+		} else {
+			mirrorCam.draw(0, 0);
+		}
 
-	texScreen.loadScreenData(0,0,640,480);
+		texScreen.loadScreenData(0,0,640,480);
+	}
 
 	glPushMatrix();
 	glRotatef(outputRotation, 0, 0, 1);
@@ -171,8 +173,8 @@ void testApp::draw() {
 	glPopMatrix();
 
 	// Display the previous screenshot and url
-	if (screenshotsUploadEnabled) {
-		if (state!=SAVING_SCREENSHOT) {
+	if (state!=SAVING_SCREENSHOT) {
+		if (screenshotsUploadEnabled) {
 			if (strcmp(screenshotFilename, "") != 0) {
 				// Display screenshot
 				ofVec2f screenshotPos;
@@ -183,8 +185,22 @@ void testApp::draw() {
 				ofSetColor(255);
 				myfont.drawString(msg, 25, displayHeight - 75);
 				// Display QR code
-				ofVec2f qrPos = screenshotPos + ofVec2f(-QRCode.width - 10, 50);
-				QRCode.draw(qrPos);
+				if (QRCode.bAllocated()) {
+					ofVec2f qrPos = screenshotPos + ofVec2f(-QRCode.width - 10, 50);
+					QRCode.draw(qrPos);
+				}
+			}
+
+			if (state != SHOWING_SCREENSHOT) {
+				// Display time remaining until screenshot
+				float percentage = screenshotsTimer.getElapsedSeconds() / screenshotsInterval;
+			
+				ofPath path;
+				float radius = 50;
+				ofVec2f position(displayWidth - radius - 10, radius + 10);
+				path.moveTo(position);
+				path.arc( position, radius, radius, 360 * percentage - 90, 270);
+				path.draw();
 			}
 		}
 	}
