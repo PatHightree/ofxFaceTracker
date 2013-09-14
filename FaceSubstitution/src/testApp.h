@@ -14,6 +14,9 @@ class testApp : public ofBaseApp {
 public:
 	void setup();
 	void update();
+
+	void PreviousFace();
+	void NextFace();
 	void draw();
 	void dragEvent(ofDragInfo dragInfo);
 	void loadPoints(string filename);
@@ -43,6 +46,9 @@ public:
 	ofxFaceTrackerThreaded camTracker;
 	vector<ofVec2f> srcPoints;
 	bool faceFound, faceFoundLastFrame, switchTextureOnNewFace;
+	ofVec2f facePosition, lastFacePosition;
+	float faceSwitchMinDistance;
+
 	Clone clone;
 	ofFbo srcFbo, maskFbo;
 	ofDirectory faces;

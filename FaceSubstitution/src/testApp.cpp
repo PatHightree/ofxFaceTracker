@@ -45,6 +45,7 @@ void testApp::setup() {
 	srcTracker.setTolerance(settings.getValue("tracker:tolerance", 0.1f));
 	srcTracker.setAttempts(settings.getValue("tracker:attempts", 4));
 	switchTextureOnNewFace = settings.getValue("tracker:switchTextureOnNewFace", 0);
+	faceSwitchMinDistance = settings.getValue("tracker:faceSwitchMinDistance", 100);
 
 	// Screenshot settings
 	screenshotsTimer.setStartTime();
@@ -90,7 +91,11 @@ void testApp::update() {
 		camTracker.update(toCv(mirrorCam));
 		
 		faceFoundLastFrame = faceFound;
+		if (faceFoundLastFrame)
+			lastFacePosition = facePosition;
 		faceFound = camTracker.getFound();
+		facePosition = camTracker.getPosition();
+
 		if(faceFound) {
 			ofMesh camMesh = camTracker.getImageMesh();
 			camMesh.clearTexCoords();
@@ -112,13 +117,12 @@ void testApp::update() {
 			clone.update(srcFbo.getTextureReference(), mirrorCam.getTextureReference(), maskFbo.getTextureReference());
 		}
 
-		// If a new face was detected, change to a new texture.
+		// If a new face was detected
 		if (!faceFoundLastFrame && faceFound && switchTextureOnNewFace) {
-			currentFace++;
-			// Clamp currentFace and load 
-			currentFace = (currentFace + faces.size()-1) % (faces.size()-1);
-			if(faces.size()!=0)
-				loadFace(faces.getPath(currentFace));
+			// If the new face is not at the same location as the previous, switch face
+			if (facePosition.distance(lastFacePosition) > faceSwitchMinDistance) {
+				NextFace();
+			}
 		}
 	}
 
@@ -164,12 +168,10 @@ void testApp::draw() {
 
 		texScreen.loadScreenData(0,0,640,480);
 
-		//glPushMatrix();
-		//glTranslatef(outputHeight, 0, 0);
+		glPushMatrix();
 		glRotatef(outputRotation, 0, 0, 1);
 		texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
-		//texScreen.draw(-outputWidth/2+(1080/2), 0, outputWidth, outputHeight);
-		//glPopMatrix();
+		glPopMatrix();
 	}
 
 	glRotatef(outputRotation, 0, 0, 1);
@@ -192,6 +194,23 @@ void testApp::draw() {
 			drawHighlightString("image face not found", 10, 30);
 		}
 	}
+}
+
+void testApp::PreviousFace()
+{
+	currentFace--;
+	// Clamp currentFace and load 
+	currentFace = (currentFace + faces.size()-1) % (faces.size()-1);
+	if(faces.size()!=0)
+		loadFace(faces.getPath(currentFace));
+}
+void testApp::NextFace()
+{
+	currentFace++;
+	// Clamp currentFace and load 
+	currentFace = (currentFace + faces.size()-1) % (faces.size()-1);
+	if(faces.size()!=0)
+		loadFace(faces.getPath(currentFace));
 }
 
 void testApp::loadFace(string face){
@@ -234,10 +253,10 @@ void testApp::dragEvent(ofDragInfo dragInfo) {
 void testApp::keyPressed(int key){
 	switch(key){
 	case OF_KEY_UP:
-		currentFace++;
+		NextFace();
 		break;
 	case OF_KEY_DOWN:
-		currentFace--;
+		PreviousFace();
 		break;
 	case OF_KEY_BACKSPACE:
 		ofToggleFullscreen();
@@ -250,9 +269,6 @@ void testApp::keyPressed(int key){
 		ofExit();
 		break;
 	}
-	currentFace = (currentFace + faces.size()-1) % (faces.size()-1);
-	if(faces.size()!=0)
-		loadFace(faces.getPath(currentFace));
 }
 
 void testApp::CreateScreenshotFilename()
@@ -289,7 +305,7 @@ void testApp::SaveScreenShot(){
 	// Write camera capture
 	string cameraPath = ofFilePath::join(cameraCapturesLocation, screenshotFilename);
 	mirrorCam.saveImage(cameraPath);
-
+	 
 	// Upload files
 	if (settings.getValue("screenshots:upload", 0)) {
 		ftpClient.send(

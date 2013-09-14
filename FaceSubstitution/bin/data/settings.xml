@@ -30,6 +30,7 @@
 	<tolerance>0.1</tolerance> <!-- [.01-1] match tolerance -->
 	<attempts>4</attempts> <!-- [1-4] 1 is fast and may not find faces, 4 is slow but will find faces -->
 	<switchTextureOnNewFace>1</switchTextureOnNewFace>
+	<faceSwitchMinDistance>100</faceSwitchMinDistance> <!-- minimum distance in pixels between detected faces to trigger a texture switch -->
 </tracker>
 <display>
 	<position>
