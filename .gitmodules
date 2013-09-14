@@ -3,7 +3,7 @@
 	url = https://github.com/obviousjim/ofxMSATimer.git
 [submodule "addons/ofxFTP"]
 	path = addons/ofxFTP
-url=https://github.com/fishkingsin/ofxFTP.git
+	url = https://github.com/fishkingsin/ofxFTP.git
 [submodule "addons/ofxQRcode"]
 	path = addons/ofxQRcode
 	url = https://github.com/paulreimer/ofxQRcode.git
