@@ -49,6 +49,7 @@ void testApp::setup() {
 
 	// Screenshot settings
 	screenshotsTimer.setStartTime();
+	strcpy (screenshotFilename, "");
 	screenshotsInterval = settings.getValue("screenshots:interval", 60);
 	showScreenshotDuration = settings.getValue("screenshots:showDuration", 5);
 	screenshotsEnabled = settings.getValue("screenshots:enabled", 1);
@@ -59,10 +60,11 @@ void testApp::setup() {
 	thumbnailsLocation = settings.getValue("screenshots:thumbnailsLocation", "");
 
 	// FTP settings
+	screenshotsUploadEnabled = settings.getValue("screenshots:upload", 0);
 	remoteLocation = settings.getValue("screenshots:ftp:remoteLocation", "");
 	remoteCameraCapturesLocation = settings.getValue("screenshots:ftp:remoteCameraCapturesLocation", "");
 	remoteThumbnailsLocation = settings.getValue("screenshots:ftp:remoteThumbnailsLocation", "");
-	if (settings.getValue("screenshots:ftp:enabled", 1)){
+	if (screenshotsUploadEnabled){
 		ftpClient.setup(
 			settings.getValue("screenshots:ftp:host", "192.168.1.3"),
 			settings.getValue("screenshots:ftp:user", "fulton"),
@@ -131,19 +133,13 @@ void testApp::update() {
 	case RUNNING:
 		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval) {
 			if (screenshotsEnabled)
-				state = PRE_SAVING_SCREENSHOT;
-			else {
-				screenshotsTimer.setStartTime();
-				state = RUNNING;
-			}
+				state = SAVING_SCREENSHOT;
 		}
 		break;
-	case PRE_SAVING_SCREENSHOT:
-		// Take one frame to show the screenshot info, so its there before the app freezes to save the screenshot.
-		CreateScreenshotFilename();
-		state = SAVING_SCREENSHOT;
-		break;
 	case SAVING_SCREENSHOT:
+		// Redraw the display to get rid of the text and preview image
+		draw();
+		CreateScreenshotFilename();
 		SaveScreenShot();
 		state = SHOWING_SCREENSHOT;
 		break;
@@ -157,31 +153,35 @@ void testApp::update() {
 }
 
 void testApp::draw() {
-	if (state == RUNNING){
-		ofSetColor(255);
-	
-		if(src.getWidth() > 0 && faceFound) {
-			clone.draw(0, 0);
-		} else {
-			mirrorCam.draw(0, 0);
-		}
-
-		texScreen.loadScreenData(0,0,640,480);
-
-		glPushMatrix();
-		glRotatef(outputRotation, 0, 0, 1);
-		texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
-		glPopMatrix();
+	if(src.getWidth() > 0 && faceFound) {
+		clone.draw(0, 0);
+	} else {
+		mirrorCam.draw(0, 0);
 	}
 
+	texScreen.loadScreenData(0,0,640,480);
+
+	glPushMatrix();
 	glRotatef(outputRotation, 0, 0, 1);
 	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
+	glPopMatrix();
 
-	if (state == PRE_SAVING_SCREENSHOT || state == SHOWING_SCREENSHOT) {
-		// Display sharing url
-		string msg = "Foto sharen?\nwww.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename);
-		ofSetColor(255);
-		myfont.drawString(msg, 25, displayHeight - 75);
+	// Display the previous screenshot and url
+	if (screenshotsUploadEnabled) {
+		if (state!=SAVING_SCREENSHOT) {
+			if (strcmp(screenshotFilename, "") != 0) {
+				// Display screenshot
+				screenImg.draw(
+					displayWidth - screenImg.width * 2 - 10, 
+					displayHeight - screenImg.height * 2 - 10, 
+					screenImg.width * 2, 
+					screenImg.height * 2);
+				// Display sharing url
+				string msg = "Foto sharen?\nwww.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename);
+				ofSetColor(255);
+				myfont.drawString(msg, 25, displayHeight - 75);
+			}
+		}
 	}
 
 	if (displayErrorMessages){
@@ -262,8 +262,7 @@ void testApp::keyPressed(int key){
 		ofToggleFullscreen();
 		break;
 	case 32: //Space
-		// Go to state before saving screenshot to show the url on screen
-		state = PRE_SAVING_SCREENSHOT;
+		state = SAVING_SCREENSHOT;
 		break;
 	case OF_KEY_ESC:
 		ofExit();
@@ -284,7 +283,6 @@ void testApp::CreateScreenshotFilename()
 
 void testApp::SaveScreenShot(){
 	// Take screenshot
-	ofImage screenImg;
 	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
 	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
 	if (screenshotWidth != displayWidth || screenshotHeight != displayHeight)
@@ -307,7 +305,7 @@ void testApp::SaveScreenShot(){
 	mirrorCam.saveImage(cameraPath);
 	 
 	// Upload files
-	if (settings.getValue("screenshots:upload", 0)) {
+	if (screenshotsUploadEnabled) {
 		ftpClient.send(
 			screenshotFilename, 
 			screenshotsLocation,

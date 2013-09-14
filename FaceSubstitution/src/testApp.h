@@ -28,7 +28,7 @@ public:
 
 	ofxXmlSettings settings;
 	bool displayErrorMessages;
-	enum states { RUNNING, PRE_SAVING_SCREENSHOT, SAVING_SCREENSHOT, SHOWING_SCREENSHOT };
+	enum states { RUNNING, PRE_PRE_SAVING_SCREENSHOT, PRE_SAVING_SCREENSHOT, KEYBOARD_TRIGGERED_SCREENSHOT, SAVING_SCREENSHOT, SHOWING_SCREENSHOT };
 	states state;
 
 	int camWidth, camHeight;
@@ -56,10 +56,11 @@ public:
 
 	ofTexture texScreen;
 
+	ofImage screenImg;
 	ofxMSATimer screenshotsTimer;
 	float screenshotsInterval;
 	float showScreenshotDuration;
-	bool screenshotsEnabled;
+	bool screenshotsEnabled, screenshotsUploadEnabled;
 	char screenshotFilename[30];
 	int screenshotWidth, screenshotHeight;
 	string screenshotsLocation;
@@ -69,6 +70,7 @@ public:
 	string remoteCameraCapturesLocation;
 	string remoteThumbnailsLocation;
 	ofxFTPClient ftpClient;
+	string sharingUrl;
 
 	ofTrueTypeFont myfont;
 };
