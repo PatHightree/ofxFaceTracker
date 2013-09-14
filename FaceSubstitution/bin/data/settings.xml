@@ -9,7 +9,10 @@
 	<thumbnailsLocation>screenshots\thumbs</thumbnailsLocation>
 	<thumbWidth>90</thumbWidth>
 	<thumbHeight>160</thumbHeight>
+
 	<upload>1</upload>
+	<sharingUrl>www.fultonia.nl/feest-fotos/</sharingUrl>
+	<sharingMessage>Foto sharen?</sharingMessage>
 	<ftp>
 		<host>192.168.1.3</host>
 		<port>21</port>

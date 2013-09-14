@@ -71,6 +71,8 @@ void testApp::setup() {
 			settings.getValue("screenshots:ftp:password", ""),
 			settings.getValue("screenshots:ftp:port", 21));
 	}
+	sharingUrl = settings.getValue("screenshots:sharingUrl", "");
+	sharingMessage = settings.getValue("screenshots:sharingMessage", "");
 
 	// Faces settings
 	faces.allowExt("jpg");
@@ -171,15 +173,16 @@ void testApp::draw() {
 		if (state!=SAVING_SCREENSHOT) {
 			if (strcmp(screenshotFilename, "") != 0) {
 				// Display screenshot
-				screenImg.draw(
-					displayWidth - screenImg.width * 2 - 10, 
-					displayHeight - screenImg.height * 2 - 10, 
-					screenImg.width * 2, 
-					screenImg.height * 2);
+				ofVec2f screenshotPos;
+				screenshotPos.set(displayWidth - screenImg.width * 2 - 10, displayHeight - screenImg.height * 2 - 10);
+				screenImg.draw(screenshotPos, screenImg.width * 2, screenImg.height * 2);
 				// Display sharing url
-				string msg = "Foto sharen?\nwww.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename);
+				string msg = sharingMessage + "\n" + sharingUrl + ofFilePath::removeExt(screenshotFilename);
 				ofSetColor(255);
 				myfont.drawString(msg, 25, displayHeight - 75);
+				// Display QR code
+				ofVec2f qrPos = screenshotPos + ofVec2f(-QRCode.width - 10, 50);
+				QRCode.draw(qrPos);
 			}
 		}
 	}
@@ -318,6 +321,7 @@ void testApp::SaveScreenShot(){
 			screenshotFilename, 
 			thumbnailsLocation,
 			remoteThumbnailsLocation);
+		QRCode.fetch(ofFilePath::addTrailingSlash(sharingUrl) + screenshotFilename, 200);
 	}
 }
 

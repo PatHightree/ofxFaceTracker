@@ -9,6 +9,7 @@
 #include "ofxMSATimer.h"
 #include <time.h>       /* time_t, struct tm, time, localtime, asctime */
 #include "ofxFTP.h"
+#include "ofxQRcode.h"
 
 class testApp : public ofBaseApp {
 public:
@@ -57,6 +58,7 @@ public:
 	ofTexture texScreen;
 
 	ofImage screenImg;
+	ofxQRcode QRCode;
 	ofxMSATimer screenshotsTimer;
 	float screenshotsInterval;
 	float showScreenshotDuration;
@@ -71,6 +73,7 @@ public:
 	string remoteThumbnailsLocation;
 	ofxFTPClient ftpClient;
 	string sharingUrl;
+	string sharingMessage;
 
 	ofTrueTypeFont myfont;
 };

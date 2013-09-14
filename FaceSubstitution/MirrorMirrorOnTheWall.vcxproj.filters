@@ -91,6 +91,9 @@
     <ClCompile Include="..\addons\ofxFTP\src\ofxFTP.cpp">
       <Filter>addons\ofxFTP\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\addons\ofxQRcode\src\ofxQRcode.cpp">
+      <Filter>addons\ofxQRCode\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann\all_indices.h">
@@ -429,6 +432,9 @@
     <ClInclude Include="..\addons\ofxFTP\src\ofxFTP.h">
       <Filter>addons\ofxFTP\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\addons\ofxQRcode\src\ofxQRcode.h">
+      <Filter>addons\ofxQRCode\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -463,6 +469,12 @@
     </Filter>
     <Filter Include="addons\ofxFTP\libs\CFtpServer">
       <UniqueIdentifier>{36b14194-b5b9-43c8-b536-965d4e78c88d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxQRCode">
+      <UniqueIdentifier>{0d806356-0eb9-464c-a5a0-982b04e52d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxQRCode\src">
+      <UniqueIdentifier>{2b7c8636-9df9-4607-a50b-40e9008f911c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

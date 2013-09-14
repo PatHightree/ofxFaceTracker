@@ -4,3 +4,6 @@
 [submodule "addons/ofxFTP"]
 	path = addons/ofxFTP
 url=https://github.com/fishkingsin/ofxFTP.git
+[submodule "addons/ofxQRcode"]
+	path = addons/ofxQRcode
+	url = https://github.com/paulreimer/ofxQRcode.git
