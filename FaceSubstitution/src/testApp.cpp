@@ -133,10 +133,12 @@ void testApp::update() {
 
 	switch (state) {
 	case RUNNING:
-		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval) {
+		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval)
 			if (screenshotsEnabled)
-				state = SAVING_SCREENSHOT;
-		}
+				if (faceFound)
+					state = SAVING_SCREENSHOT;
+				else
+					screenshotsTimer.setStartTime();
 		break;
 	case SAVING_SCREENSHOT:
 		// Redraw the display to get rid of the text and preview image
