@@ -20,11 +20,12 @@ public:
 	void loadFace(string filename);
 	void keyPressed(int key);
 	void SaveScreenShot(void);
+	void CreateScreenshotFilename();
 	char* asctime(const struct tm *timeptr);
 
 	ofxXmlSettings settings;
 	bool displayErrorMessages;
-	enum states { RUNNING, SHOWING_INFO, SAVING_SCREENSHOT, SHOWING_SCREENSHOT };
+	enum states { RUNNING, PRE_SAVING_SCREENSHOT, SAVING_SCREENSHOT, SHOWING_SCREENSHOT };
 	states state;
 
 	int camWidth, camHeight;

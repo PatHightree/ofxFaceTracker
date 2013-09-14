@@ -127,15 +127,16 @@ void testApp::update() {
 	case RUNNING:
 		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval) {
 			if (screenshotsEnabled)
-				state = SHOWING_INFO;
+				state = PRE_SAVING_SCREENSHOT;
 			else {
 				screenshotsTimer.setStartTime();
 				state = RUNNING;
 			}
 		}
 		break;
-	case SHOWING_INFO:
-		// Take one frame to show the info, so its there before the app freezes to save the screenshot.
+	case PRE_SAVING_SCREENSHOT:
+		// Take one frame to show the screenshot info, so its there before the app freezes to save the screenshot.
+		CreateScreenshotFilename();
 		state = SAVING_SCREENSHOT;
 		break;
 	case SAVING_SCREENSHOT:
@@ -174,7 +175,7 @@ void testApp::draw() {
 	glRotatef(outputRotation, 0, 0, 1);
 	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
 
-	if (state == SHOWING_INFO || state == SHOWING_SCREENSHOT) {
+	if (state == PRE_SAVING_SCREENSHOT || state == SHOWING_SCREENSHOT) {
 		// Display sharing url
 		string msg = "Foto sharen?\nwww.fultonia.nl/feest-fotos/" + ofFilePath::removeExt(screenshotFilename);
 		ofSetColor(255);
@@ -241,8 +242,9 @@ void testApp::keyPressed(int key){
 	case OF_KEY_BACKSPACE:
 		ofToggleFullscreen();
 		break;
-	case OF_KEY_RETURN:
-		SaveScreenShot();
+	case 32: //Space
+		// Go to state before saving screenshot to show the url on screen
+		state = PRE_SAVING_SCREENSHOT;
 		break;
 	case OF_KEY_ESC:
 		ofExit();
@@ -253,16 +255,8 @@ void testApp::keyPressed(int key){
 		loadFace(faces.getPath(currentFace));
 }
 
-void testApp::SaveScreenShot(){
-	if (!screenshotsEnabled) return;
-
-	// Take screenshot
-	ofImage screenImg;
-	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
-	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
-	if (screenshotWidth != displayWidth || screenshotHeight != displayHeight)
-		screenImg.resize(screenshotWidth, screenshotHeight);
-
+void testApp::CreateScreenshotFilename()
+{
 	// Create filename
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -270,11 +264,20 @@ void testApp::SaveScreenShot(){
 	timeinfo = localtime ( &rawtime );
 	strcpy(screenshotFilename, asctime (timeinfo));
 	strcat(screenshotFilename, ".png");
-	cout << "Saving " << screenshotFilename << endl;
+}
+
+void testApp::SaveScreenShot(){
+	// Take screenshot
+	ofImage screenImg;
+	screenImg.allocate(displayWidth, displayHeight, OF_IMAGE_COLOR);  
+	screenImg.grabScreen(0,0,displayWidth,displayHeight);  
+	if (screenshotWidth != displayWidth || screenshotHeight != displayHeight)
+		screenImg.resize(screenshotWidth, screenshotHeight);
 
 	// Write screenshot
 	string screenshotPath = ofFilePath::join(screenshotsLocation, screenshotFilename);
 	screenImg.saveImage(screenshotPath);
+	cout << "Saving " << screenshotFilename << endl;
 
 	// Write thumbnail
 	screenImg.resize(
