@@ -32,10 +32,8 @@ public:
 	enum states { RUNNING, PRE_PRE_SAVING_SCREENSHOT, PRE_SAVING_SCREENSHOT, KEYBOARD_TRIGGERED_SCREENSHOT, SAVING_SCREENSHOT, SHOWING_SCREENSHOT };
 	states state;
 
-	int camWidth, camHeight;
+	int camWidth, camHeight, camCroppedWidth;
 	int displayWidth, displayHeight;
-	int outputWidth, outputHeight;
-	int outputShiftX, outputShiftY;
 	float outputRotation;
 
 	ofVideoGrabber cam;

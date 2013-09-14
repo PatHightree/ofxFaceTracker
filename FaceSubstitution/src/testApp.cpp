@@ -14,14 +14,11 @@ void testApp::setup() {
 	state = RUNNING;
 
 	// Camera capture settings
-	camWidth = settings.getValue("camera:width", 640);
-	camHeight = settings.getValue("camera:height", 480);
 	displayWidth = settings.getValue("display:size:x", 1080);
 	displayHeight = settings.getValue("display:size:y", 1920);
-	outputWidth = displayWidth * 16/9 * 4/3;	// Display a 9:16 cut out of a 4:3 camera image
-	outputHeight = displayHeight;
-	outputShiftX = -(outputWidth/2)+(displayWidth/2);
-	outputShiftY = 0;
+	camWidth = settings.getValue("camera:width", 640);
+	camHeight = settings.getValue("camera:height", 480);
+	camCroppedWidth = settings.getValue("camera:height", 480)*displayWidth/displayHeight;	// For cropping a 9:16 image out of the 4:3 camera image
 	outputRotation = 0;
 
 	// Display settings
@@ -92,6 +89,7 @@ void testApp::update() {
 		// Mirroring has to be done on the CPU side because the tracker lives on that side of the fence
 		mirrorCam.setFromPixels(cam.getPixelsRef());
 		mirrorCam.mirror(false, true);
+		mirrorCam.crop(camWidth/2 - camCroppedWidth/2, 0, camCroppedWidth, 480);
 		camTracker.update(toCv(mirrorCam));
 		
 		faceFoundLastFrame = faceFound;
@@ -130,7 +128,6 @@ void testApp::update() {
 		}
 	}
 
-
 	switch (state) {
 	case RUNNING:
 		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval)
@@ -164,12 +161,12 @@ void testApp::draw() {
 			mirrorCam.draw(0, 0);
 		}
 
-		texScreen.loadScreenData(0,0,640,480);
+		texScreen.loadScreenData(0,0,camCroppedWidth,camHeight);
 	}
 
 	glPushMatrix();
 	glRotatef(outputRotation, 0, 0, 1);
-	texScreen.draw(outputShiftX, outputShiftY, outputWidth, outputHeight);
+	texScreen.draw(0, 0, displayWidth, displayHeight);
 	glPopMatrix();
 
 	// Display the previous screenshot and url
