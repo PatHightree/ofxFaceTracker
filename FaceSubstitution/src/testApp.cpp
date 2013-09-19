@@ -350,12 +350,17 @@ char* testApp::asctime(const struct tm *timeptr)
 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 	};
 	static char result[26];
-	sprintf(result, "%.3s_%d-%.3s-%d_%.2d.%.2d.%.2d",
-		wday_name[timeptr->tm_wday],
+	//sprintf(result, "%.3s_%d-%.3s-%d_%.2d.%.2d.%.2d",
+	//	wday_name[timeptr->tm_wday],
+	//	timeptr->tm_mday, 
+	//	mon_name[timeptr->tm_mon],
+	//	1900 + timeptr->tm_year,
+	//	timeptr->tm_hour,
+	//	timeptr->tm_min, timeptr->tm_sec);
+	sprintf(result, "%d_%.2d.%.2d.%.2d",
 		timeptr->tm_mday, 
-		mon_name[timeptr->tm_mon],
-		1900 + timeptr->tm_year,
 		timeptr->tm_hour,
-		timeptr->tm_min, timeptr->tm_sec);
+		timeptr->tm_min, 
+		timeptr->tm_sec);
 	return result;
 }
