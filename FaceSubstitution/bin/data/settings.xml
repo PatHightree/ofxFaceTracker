@@ -11,7 +11,7 @@
 	<thumbHeight>160</thumbHeight>
 
 	<upload>1</upload>
-	<sharingUrl>www.fultonia.nl/sprookjesfeest/</sharingUrl>
+	<sharingUrl>www.fultonia.nl/sprookjesfeest/?id=</sharingUrl>
 	<sharingMessage>Foto sharen?</sharingMessage>
 	<ftp>
 		<host>192.168.1.3</host>

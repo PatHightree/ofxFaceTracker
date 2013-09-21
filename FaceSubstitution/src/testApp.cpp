@@ -178,7 +178,9 @@ void testApp::draw() {
 				screenshotPos.set(displayWidth - screenImg.width * 2 - 10, displayHeight - screenImg.height * 2 - 10);
 				screenImg.draw(screenshotPos, screenImg.width * 2, screenImg.height * 2);
 				// Display sharing url
-				string msg = sharingMessage + "\n" + sharingUrl + ofFilePath::removeExt(screenshotFilename);
+				string file = ofFilePath::removeExt(screenshotFilename);
+				ofStringReplace(file, ".", "-");
+				string msg = sharingMessage + "\n" + sharingUrl + file;
 				ofSetColor(255);
 				myfont.drawString(msg, 25, displayHeight - 75);
 				// Display QR code
@@ -336,7 +338,9 @@ void testApp::SaveScreenShot(){
 			screenshotFilename, 
 			thumbnailsLocation,
 			remoteThumbnailsLocation);
-		QRCode.fetch(ofFilePath::addTrailingSlash(sharingUrl) + screenshotFilename, 200);
+		string file = ofFilePath::removeExt(screenshotFilename);
+		ofStringReplace(file, ".", "-");
+		QRCode.fetch(sharingUrl + file, 200);
 	}
 }
 
