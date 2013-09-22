@@ -130,12 +130,10 @@ void testApp::update() {
 
 	switch (state) {
 	case RUNNING:
-		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval)
-			if (screenshotsEnabled)
-				if (faceFound)
-					state = SAVING_SCREENSHOT;
-				else
-					screenshotsTimer.setStartTime();
+		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval) {
+			if (screenshotsEnabled && faceFound)
+				state = SAVING_SCREENSHOT;
+		}
 		break;
 	case SAVING_SCREENSHOT:
 		// Redraw the display to get rid of the text and preview image
@@ -143,10 +141,11 @@ void testApp::update() {
 		CreateScreenshotFilename();
 		SaveScreenShot();
 		state = SHOWING_SCREENSHOT;
+		screenshotsTimer.setStartTime();	// Reset timer and use it to time the showing of the screenshot.
 		break;
 	case SHOWING_SCREENSHOT:
-		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval + showScreenshotDuration) {
-			screenshotsTimer.setStartTime();
+		if (screenshotsTimer.getElapsedSeconds() > showScreenshotDuration) {
+			screenshotsTimer.setStartTime();	// Reset timer and use it to time the capturing of the screenshot.
 			state = RUNNING;
 		}
 		break;
@@ -178,7 +177,9 @@ void testApp::draw() {
 				screenshotPos.set(displayWidth - screenImg.width * 2 - 10, displayHeight - screenImg.height * 2 - 10);
 				screenImg.draw(screenshotPos, screenImg.width * 2, screenImg.height * 2);
 				// Display sharing url
-				string msg = sharingMessage + "\n" + sharingUrl + ofFilePath::removeExt(screenshotFilename);
+				string file = ofFilePath::removeExt(screenshotFilename);
+				ofStringReplace(file, ".", "-");
+				string msg = sharingMessage + "\n" + sharingUrl + file;
 				ofSetColor(255);
 				myfont.drawString(msg, 25, displayHeight - 75);
 				// Display QR code
@@ -336,7 +337,9 @@ void testApp::SaveScreenShot(){
 			screenshotFilename, 
 			thumbnailsLocation,
 			remoteThumbnailsLocation);
-		QRCode.fetch(ofFilePath::addTrailingSlash(sharingUrl) + screenshotFilename, 200);
+		string file = ofFilePath::removeExt(screenshotFilename);
+		ofStringReplace(file, ".", "-");
+		QRCode.fetch(sharingUrl + file, 200);
 	}
 }
 
@@ -350,12 +353,17 @@ char* testApp::asctime(const struct tm *timeptr)
 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 	};
 	static char result[26];
-	sprintf(result, "%.3s_%d-%.3s-%d_%.2d.%.2d.%.2d",
-		wday_name[timeptr->tm_wday],
+	//sprintf(result, "%.3s_%d-%.3s-%d_%.2d.%.2d.%.2d",
+	//	wday_name[timeptr->tm_wday],
+	//	timeptr->tm_mday, 
+	//	mon_name[timeptr->tm_mon],
+	//	1900 + timeptr->tm_year,
+	//	timeptr->tm_hour,
+	//	timeptr->tm_min, timeptr->tm_sec);
+	sprintf(result, "%d_%.2d.%.2d.%.2d",
 		timeptr->tm_mday, 
-		mon_name[timeptr->tm_mon],
-		1900 + timeptr->tm_year,
 		timeptr->tm_hour,
-		timeptr->tm_min, timeptr->tm_sec);
+		timeptr->tm_min, 
+		timeptr->tm_sec);
 	return result;
 }
