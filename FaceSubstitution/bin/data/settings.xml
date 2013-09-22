@@ -1,6 +1,6 @@
 ﻿<screenshots>
 	<enabled>1</enabled>
-	<interval>180</interval> <!-- all durations are specified in seconds -->
+	<interval>90</interval> <!-- all durations are specified in seconds -->
 	<showDuration>2</showDuration> <!-- time the screenshot is shown fullscreen -->
 	<screenshotWidth>432</screenshotWidth>
 	<screenshotHeight>768</screenshotHeight>
