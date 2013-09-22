@@ -130,12 +130,10 @@ void testApp::update() {
 
 	switch (state) {
 	case RUNNING:
-		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval)
-			if (screenshotsEnabled)
-				if (faceFound)
-					state = SAVING_SCREENSHOT;
-				else
-					screenshotsTimer.setStartTime();
+		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval) {
+			if (screenshotsEnabled && faceFound)
+				state = SAVING_SCREENSHOT;
+		}
 		break;
 	case SAVING_SCREENSHOT:
 		// Redraw the display to get rid of the text and preview image
@@ -143,10 +141,11 @@ void testApp::update() {
 		CreateScreenshotFilename();
 		SaveScreenShot();
 		state = SHOWING_SCREENSHOT;
+		screenshotsTimer.setStartTime();	// Reset timer and use it to time the showing of the screenshot.
 		break;
 	case SHOWING_SCREENSHOT:
-		if (screenshotsTimer.getElapsedSeconds() > screenshotsInterval + showScreenshotDuration) {
-			screenshotsTimer.setStartTime();
+		if (screenshotsTimer.getElapsedSeconds() > showScreenshotDuration) {
+			screenshotsTimer.setStartTime();	// Reset timer and use it to time the capturing of the screenshot.
 			state = RUNNING;
 		}
 		break;
